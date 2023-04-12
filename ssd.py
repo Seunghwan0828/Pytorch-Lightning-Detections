@@ -27,7 +27,7 @@ from pycocotools.cocoeval import COCOeval
 warnings.filterwarnings('ignore')
 
     
-class ConstDataset(Dataset):
+class CustomDataset(Dataset):
     def __init__(
         self,
         image_dir: os.PathLike,
@@ -166,10 +166,10 @@ class DataModule(pl.LightningDataModule):
 
     def setup(self, stage: str):
         if stage == "fit":
-            self.trainset = ConstDataset(self.train_path, self.train_annt_path, self.train_transforms)
-            self.testset = ConstDataset(self.valid_path, self.valid_annt_path, self.valid_transforms)
+            self.trainset = CustomDataset(self.train_path, self.train_annt_path, self.train_transforms)
+            self.testset = CustomDataset(self.valid_path, self.valid_annt_path, self.valid_transforms)
         if stage == 'predict':
-            self.testset = ConstDataset(self.valid_path, self.valid_annt_path, self.valid_transforms)
+            self.testset = CustomDataset(self.valid_path, self.valid_annt_path, self.valid_transforms)
 
     def train_dataloader(self):
         return DataLoader(self.trainset, batch_size=self.batch_size, num_workers=self.num_workers, collate_fn=collate_fn, shuffle=True, drop_last=True, pin_memory=True)
